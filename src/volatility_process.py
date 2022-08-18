@@ -1,5 +1,5 @@
 """
-Evaluating the derivation of Standard Classical Laplace (SCL) distribution to a difference of two exponential.
+Computing a volatilty process with positive and negative news. The shocks are represented by two exponential random variables.
 Model 1.3.1: Modeling volatility process, with standard exponential.
 """
 import numpy as np

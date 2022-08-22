@@ -1,13 +1,30 @@
 """
-Assymmetric Power Laplace GARCH. Probability density function of from a Standard Laplace (SLC). 
+Probability density function from a Standard Laplace (SLC) represented by a difference of two exponential processes. 
 """
 
 import numpy as np
 from volatility_process import VolatilityProcess
 
 class DecomposedSLC(VolatilityProcess):
+    """
+    Class to present symmetric and asymmetric probability density functions. 
 
-    def asymmetric_pdf(self, rho:np.array, theta:float=0.5):
+    Args:
+        VolatilityProcess (Class): Class to generate symmetric and asymmetric volatility processes. 
+                                    Mainly to inherit default values of the parameters in the pdf. 
+    """
+
+    def asymmetric_pdf(self, rho:np.array, theta:float=0.5)->np.array:
+        """
+        Asymmetric probability density function, i.e. theta≠0. 
+
+        Args:
+            rho (np.array): Sequence of values that represents the volatility process. 
+            theta (float, optional): Asymmetric parameter. Defaults to 0.5.
+
+        Returns:
+            np.array: probability density function in the case of theta≠0.
+        """
 
         rho_t = rho[1:]
         rho_lag = rho[0:-1]
@@ -23,7 +40,16 @@ class DecomposedSLC(VolatilityProcess):
         return pdf
 
 
-    def symmetric_pdf(self, rho:np.array):
+    def symmetric_pdf(self, rho:np.array)->np.array:
+        """
+        Symmetric probability density funciton, i.e. theat=0.
+
+        Args:
+            rho (np.array): Sequence of values that represents the volatility process. 
+
+        Returns:
+            np.array: probability density function in the case of theta≠0.
+        """
         rho_t = rho[1:]
         rho_lag = rho[0:-1]
 

@@ -6,8 +6,6 @@ import numpy as np
 from typing import Optional
 import plotly.express as px
 
-# Asymmetric case theta ≠ 0
-# The real model of interest restrictions 2alpha < 1-beta
 
 class VolatilityProcess():
     """

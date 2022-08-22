@@ -7,13 +7,10 @@ from volatility_process import VolatilityProcess
 
 class DecomposedSLC(VolatilityProcess):
 
-    def __init__(self, rho:np.array):
-        self.rho = rho
+    def assymmetric_pdf(self, rho:np.array, theta:float=0.5):
 
-    def assymmetric_pdf(self, theta:float=0.5):
-
-        rho_t = self.rho[1:]
-        rho_lag = self.rho[0:-1]
+        rho_t = rho[1:]
+        rho_lag = rho[0:-1]
 
         numerator_sub = rho_t-(1+self.beta*rho_lag)
 
@@ -26,9 +23,9 @@ class DecomposedSLC(VolatilityProcess):
         return pdf
 
 
-    def symmetric_pdf(self):
-        rho_t = self.rho[1:]
-        rho_lag = self.rho[0:-1]
+    def symmetric_pdf(self, rho:np.array):
+        rho_t = rho[1:]
+        rho_lag = rho[0:-1]
 
         multiplicator = rho_t-self.beta*rho_lag-1
 

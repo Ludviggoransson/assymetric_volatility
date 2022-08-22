@@ -1,5 +1,5 @@
 """
-Computing a volatilty process with positive and negative news. The shocks are represented by two exponential random variables.
+Evaluating the derivation of Standard Classical Laplace (SCL) distribution to a difference of two exponential.
 Model 1.3.1: Modeling volatility process, with standard exponential.
 """
 import numpy as np
@@ -13,14 +13,15 @@ class VolatilityProcess():
     """
     Class to generate and evaluate assymmetric volatility. 
     """
-    def __init__(self, alpha:float=0.19, beta:float=0.3, theta:float=0.0,shape:int=1):
-        """Parameters for the Standard Laplace process that fulfills the restraint of 2\alpha < 1-\beta.
+    def __init__(self, alpha:float=0.19, beta:float=0.2, theta:float=0.0,shape:int=1):
+        """
+        Parameters for the Standard Laplace process that fulfills the restraint of 2\alpha < 1-\beta with zero shocks. 
 
         Args:
             alpha (float, optional): Defaults to 0.19.
             beta (float, optional): Defaults to 0.3.
-            theta (float, optional): Defaults to 0.0.
-            shape (int, optional): Defaults to 1.
+            theta (float, optional): Defaults to 0.0 as in zero shocks. 
+            shape (int, optional): Defaults to 1. Shaper parameter of the exponential processes. 
         """
         self.alpha = alpha
         self.beta = beta
@@ -48,11 +49,3 @@ class VolatilityProcess():
                                 ((1-self.theta)*exp1[i-1]+(1+self.theta)*exp2[i-1])+self.beta
                                 )
         return rho
-    
-if __name__ == "__main__":
-    n = 2000
-    vol_exp = VolatilityProcess().exponential_process(n=n)
-    fig = px.line(vol_exp)
-    fig.show()
-    n
-    

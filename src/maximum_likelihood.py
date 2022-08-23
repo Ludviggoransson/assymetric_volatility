@@ -1,59 +1,50 @@
 """
-Evaluation of Maximum Likelihood estimators of alpha, beta and theta.  
+Evaluation of Maximum Likelihood estimators of alpha and beta. 
 """
+from re import A
 import numpy as np
-from pdf_decomposed_standard_laplace import DecomposedSLC
+from volatility_process import VolatilityProcess
 
-class MLEstimator(DecomposedSLC):
+class MLEstimator(VolatilityProcess):
     """
-    Class to generate Maximum Likehood estimators from decomposing a Standard Classical Laplace to a difference of two exponential processes. 
+    Class to generate Maximum Likehood estimators from decomposing a Standard Classical Laplace to a difference of two exponential processes.
+
+    I use numerical optimisation to find the ML estimators. 
     """
-    def __init__(self, alpha:float, beta:float, theta:float, rho:np.array):
-        """Input parameters for the ML estimators. 
 
-        Args:
-            alpha (float): alpha parameter. 
-            beta (float): beta parameter.
-            theta (float): theta parameter.
-            rho (np.array): volatility process from Standard Laplace (SLC).
+    def ml_estimator(self, n:int):
         """
-        self.alpha = alpha
-        self.beta = beta
-        self.theta = theta
-
-    def alpha(self):
-        """
-        Function to evaluate the ML estimator for alpha. 
+        Function to evaluate the ML estimator for alpha and beta. 
         
         Alpha is the shape parameter of the pdf SLC. 
 
         Returns:
             float: Value for the ML estimator of alpha. 
         """
-        x = np.linspace(0, 1, 1000)
-        ml_a = self.beta, self.theta
-        return ml_a
 
-    def beta(self):
-        """
-        Function to evaluate the ML estimator for beta. 
+        rho = VolatilityProcess().exponential_process(n=n)
+        rho_t = rho[1:]
+        rho_lag = rho[0:-1]
+        C = 0.0000001
+        alpha = np.full(n, np.nan)
+        beta = np.full(n, np.nan)
+
+        beta[0] = self.beta/2
+        alpha[0] = self.alpha/2
+        alpha_denumerator = 2*n*rho_lag
+        for i in range(1, n):
+            alpha_numerator = rho_t-beta[i-1]*rho_lag-1
+            beta_denumerator = rho_t-beta[i-1]*rho_lag-1
+
+            alpha[i] = alpha[i-1] - C*(alpha[i-1]-sum(alpha_numerator/alpha_denumerator))
+            beta[i] = beta[i-1] - C*(sum(rho_lag/beta_denumerator)-(n/alpha[i-1]))
         
-        Beta represents impact from previous volatility step, similar to the generalisation from ARCH to GARCH. 
+        return alpha, beta
 
-        Returns:
-            float: Value for the ML estimator of beta. 
-        """
-        x = np.linspace(0, 1, 1000)
-        ml_b = self.alpha, self.theta
-        return ml_b
+if __name__ == "__main__":
+    import pandas as pd
+    x = MLEstimator().ml_alpha(n=10000)
     
-    def theta(self):
-        """
-        Function to evaluate the ML estimator for theta. Magnitude of the positive/netave news.  
-
-        Returns:
-            float: Value for the ML estimator of theta. 
-        """
-        x = np.linspace(0, 1, 1000)
-        ml_t = self.alpha, self.beta
-        return ml_t
+    pd.DataFrame(x[0]).plot()
+    pd.DataFrame(x[1]).plot()
+    n = 1

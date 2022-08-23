@@ -11,5 +11,5 @@ The source folder contains volatility process, probability densisty function and
 ```
 or 
 ```
- python3 -m install -e ".[dev]"
+ python3 -m pip install -e ".[dev]"
 ```
